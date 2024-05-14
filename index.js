@@ -66,6 +66,13 @@ async function run() {
         const result = await queryCollection.findOne(query);
         res.send(result)
     })
+    app.get('/myqueries/:email',async (req,res)=>{
+        const email=req.params.email
+        const query = {user_email: email };
+       
+        const result = await queryCollection.find(query).toArray();
+        res.send(result)
+    })
     app.put('/query/:id',async (req,res)=>{
         const id=req.params.id
         const query = { _id: new ObjectId(id) };
@@ -79,6 +86,32 @@ async function run() {
 
       const  recommendationData=req.body 
       const result=await recommendationCollection.insertOne(recommendationData)
+
+      // console.log(recommendationData)
+      res.send(result)
+
+    })
+    app.get('/recommendation/:id',async (req,res)=>{
+
+      const  id=req.params.id 
+      console.log(id)
+      const query = { queryId: id };
+
+
+      const result=await recommendationCollection.find(query).toArray()
+
+      // console.log(recommendationData)
+      res.send(result)
+
+    })
+    app.get('/myrecommebdation/:email',async (req,res)=>{
+
+      const  email=req.params.email 
+      console.log(email)
+      const query = { recommenderEmail: email};
+
+
+      const result=await recommendationCollection.find(query).toArray()
 
       // console.log(recommendationData)
       res.send(result)
