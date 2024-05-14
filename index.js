@@ -39,6 +39,7 @@ async function run() {
 
     await client.connect();
     const queryCollection = client.db("queryDb").collection("queries");
+    const recommendationCollection = client.db("queryDb").collection("recommendation");
     
 
     app.post('/query',async(req,res)=>{
@@ -61,8 +62,27 @@ async function run() {
     app.get('/query/:id',async (req,res)=>{
         const id=req.params.id
         const query = { _id: new ObjectId(id) };
+       
         const result = await queryCollection.findOne(query);
         res.send(result)
+    })
+    app.put('/query/:id',async (req,res)=>{
+        const id=req.params.id
+        const query = { _id: new ObjectId(id) };
+        const updateDoc = {
+          $inc: { recommendationCount: 1 },
+        }
+        const result = await queryCollection.updateOne(query,updateDoc);
+        res.send(result)
+    })
+    app.post('/recommendation',async (req,res)=>{
+
+      const  recommendationData=req.body 
+      const result=await recommendationCollection.insertOne(recommendationData)
+
+      // console.log(recommendationData)
+      res.send(result)
+
     })
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
