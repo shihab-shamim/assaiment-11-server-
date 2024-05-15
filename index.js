@@ -66,6 +66,22 @@ async function run() {
         const result = await queryCollection.findOne(query);
         res.send(result)
     })
+    app.patch('/query/:id',async (req,res)=>{
+        const id=req.params.id
+        const query={ _id : new ObjectId(id)}
+        const queryData=req.body
+        const option={ upsert: true ,returnDocument: 'after'}
+        const updateDoc = {
+          $set: {
+            ...queryData,
+          },
+        }
+        // console.log({...queryData})
+        // const query = { _id: new ObjectId(id) };
+       
+        const result = await queryCollection.updateOne(query,updateDoc,option);
+        res.send(result)
+    })
     app.get('/myqueries/:email',async (req,res)=>{
         const email=req.params.email
         const query = {user_email: email };
