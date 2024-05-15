@@ -73,11 +73,27 @@ async function run() {
         const result = await queryCollection.find(query).toArray();
         res.send(result)
     })
+    app.delete('/myqueries/:id',async (req,res)=>{
+        const id=req.params.id
+        const query = {_id : new ObjectId(id) };
+       
+        const result = await queryCollection.deleteOne(query)
+        res.send(result)
+    })
     app.put('/query/:id',async (req,res)=>{
         const id=req.params.id
         const query = { _id: new ObjectId(id) };
         const updateDoc = {
           $inc: { recommendationCount: 1 },
+        }
+        const result = await queryCollection.updateOne(query,updateDoc);
+        res.send(result)
+    })
+    app.put('/tablequery/:id',async (req,res)=>{
+        const id=req.params.id
+        const query = { _id: new ObjectId(id) };
+        const updateDoc = {
+          $inc: { recommendationCount: -1 },
         }
         const result = await queryCollection.updateOne(query,updateDoc);
         res.send(result)
@@ -107,7 +123,7 @@ async function run() {
     app.get('/myrecommebdation/:email',async (req,res)=>{
 
       const  email=req.params.email 
-      console.log(email)
+      // console.log(email)
       const query = { recommenderEmail: email};
 
 
@@ -115,6 +131,14 @@ async function run() {
 
       // console.log(recommendationData)
       res.send(result)
+
+    })
+    app.delete('/table/:id',async (req,res)=>{
+      const id=req.params.id
+      const query={_id: new ObjectId(id)}
+      const result=await recommendationCollection.deleteOne(query)
+
+        res.send(result)
 
     })
     // Send a ping to confirm a successful connection
