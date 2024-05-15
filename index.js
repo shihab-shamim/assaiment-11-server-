@@ -37,7 +37,7 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
 
 
-    await client.connect();
+    // await client.connect();
     const queryCollection = client.db("queryDb").collection("queries");
     const recommendationCollection = client.db("queryDb").collection("recommendation");
     
@@ -52,10 +52,26 @@ async function run() {
 
         
     })
+    app.get('/search/:name',async(req,res)=>{
+      const name=req.params.name
+      const capitalize= name[0].toUpperCase() + name.slice(1).trim();
+      console.log(capitalize)
+      const query={product_name : capitalize}
+      const result=await queryCollection.find(query).toArray()
+      
+      res.send(result)
+
+    })
     
     app.get('/query',async (req,res)=>{
 
         const result = await queryCollection.find().toArray()
+
+      res.send(result)
+    })
+    app.get('/letestquery',async (req,res)=>{
+
+        const result = await queryCollection.find().sort({ currentDate: -1 }).limit(6).toArray()
 
       res.send(result)
     })
@@ -165,7 +181,7 @@ async function run() {
 
     })
     // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
+    // await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
